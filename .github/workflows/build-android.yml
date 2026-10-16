@@ -33,7 +33,7 @@ jobs:
           distribution: temurin
           java-version: 21
       - name: Install Android SDK tools
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
       - name: Install app packages
         run: npm install
       - name: Prepare app files
