@@ -8,7 +8,9 @@
   "dependencies": {
     "@capacitor/android": "^8.3.0",
     "@capacitor/core": "^8.3.0",
+    "@capacitor/filesystem": "^8.1.5",
     "@capacitor/local-notifications": "^8.3.0",
+    "@capacitor/share": "^8.0.1",
     "@capacitor/cli": "^8.3.0",
     "esbuild": "^0.25.0"
   }
