@@ -1,0 +1,8 @@
+{
+  "appId": "com.redisl2514.urijiproutine",
+  "appName": "우리집 루틴",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  }
+}

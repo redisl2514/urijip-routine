@@ -1,0 +1,15 @@
+{
+  "name": "urijip-routine-android",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build:android": "node scripts/build-android.mjs"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.3.0",
+    "@capacitor/core": "^8.3.0",
+    "@capacitor/local-notifications": "^8.3.0",
+    "@capacitor/cli": "^8.3.0",
+    "esbuild": "^0.25.0"
+  }
+}
