@@ -1,5 +1,7 @@
 import { Capacitor } from '@capacitor/core';
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { Share } from '@capacitor/share';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const HORIZON_DAYS = 370;
@@ -114,6 +116,54 @@ window.UrijipNativeNotifications = {
     return { ok: true };
   },
 };
+
+document.addEventListener('click', async (event) => {
+  const target = event.target instanceof Element ? event.target.closest('#backupButton') : null;
+  if (!target) return;
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
+  if (!isNative()) {
+    alert('휴대폰 앱에서 실행되지 않은 것 같아요. 설치한 우리집 루틴 앱을 열어 다시 시도해 주세요.');
+    return;
+  }
+  const originalLabel = target.textContent;
+  target.disabled = true;
+  target.textContent = '백업 준비 중…';
+  try {
+    const data = JSON.parse(localStorage.getItem('urijip-routine-v1') || '{"events":[],"filters":[]}');
+    const backup = {
+      format: 'urijip-routine-backup',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      data: {
+        events: Array.isArray(data.events) ? data.events : [],
+        filters: Array.isArray(data.filters) ? data.filters : [],
+      },
+      photo: localStorage.getItem('urijip-home-photo-v1'),
+    };
+    const filename = `urijip-routine-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    const file = await Filesystem.writeFile({
+      path: filename,
+      data: JSON.stringify(backup, null, 2),
+      directory: Directory.Cache,
+      encoding: Encoding.UTF8,
+    });
+    await Share.share({
+      title: '우리집 루틴 백업',
+      text: '백업 파일을 저장할 앱을 선택해 주세요.',
+      url: file.uri,
+      dialogTitle: '백업 파일 저장',
+    });
+  } catch (error) {
+    if (!error?.message?.toLowerCase().includes('cancel')) {
+      alert(`백업 저장을 시작하지 못했어요. 오류: ${error?.message || '알 수 없는 오류'}`);
+    }
+  } finally {
+    target.disabled = false;
+    target.textContent = originalLabel;
+  }
+}, true);
 
 document.addEventListener('DOMContentLoaded', () => {
   if (!isNative()) return;
